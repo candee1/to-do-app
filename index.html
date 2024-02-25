@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .delete-button {
+            background-color: #f44336;
+        }
+        
+        .update-button {
+            background-color: #2196f3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <form id="todo-form">
+            <input id="todo-input" type="text" placeholder="Enter a new task">
+            <button type="submit">Add</button>
+        </form>
+        <ul id="todo-list"></ul>
+    </div>
+    <script>
+        const todoForm = document.getElementById('todo-form');
+        const todoInput = document.getElementById('todo-input');
+        const todoList = document.getElementById('todo-list');
+
+        let todos = [];
+
+        function renderTodoList() {
+            todoList.innerHTML = '';
+            todos.forEach(todo => {
+                const todoItem = document.createElement('li');
+                todoItem.textContent = todo.title;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.addEventListener('click', () => deleteTodoItem(todo.id));
+                todoItem.appendChild(deleteButton);
+
+                const updateButton = document.createElement('button');
+                updateButton.textContent = 'Update';
+                updateButton.addEventListener('click', () => updateTodoItem(todo.id));
+                todoItem.appendChild(updateButton);
+
+                todoList.appendChild(todoItem);
+            });
+        }
+
+        function addTodoItem(title) {
+            const todoItem = {
+                id: Date.now(),
+                title
+            };
+
+            todos.push(todoItem);
+            renderTodoList();
+        }
+
+        function deleteTodoItem(itemId) {
+            todos = todos.filter(todo => todo.id !== itemId);
+            renderTodoList();
+        }
+
+        function updateTodoItem(itemId) {
+            const newTitle = prompt('Enter a new title:');
+            if (newTitle === null || newTitle.trim() === '') {
+                return;
+            }
+
+            const todoItem = todos.find(todo => todo.id === itemId);
+            if (todoItem) {
+                todoItem.title = newTitle;
+                renderTodoList();
+            }
+        }
+
+        todoForm.addEventListener('submit', event => {
+            event.preventDefault();
+            const todoTitle = todoInput.value.trim();
+
+            if (todoTitle !== '') {
+                addTodoItem(todoTitle);
+                todoInput.value = '';
+            }
+        });
+
+        renderTodoList();
+    </script>
+</body>
+
+</html>
